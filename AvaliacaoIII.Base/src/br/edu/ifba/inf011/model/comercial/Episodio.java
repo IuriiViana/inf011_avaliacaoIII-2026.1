@@ -1,29 +1,28 @@
 package br.edu.ifba.inf011.model.comercial;
 
 import br.edu.ifba.inf011.avaliacao1.timeline.builder.Timeline;
+import br.edu.ifba.inf011.avaliacao3.composite.ProdutoComercial;
+import br.edu.ifba.inf011.avaliacao3.visitor.PlaylistVisitor;
 
-public class Episodio{
-	
+/**
+ * COMPOSITE — Leaf
+ * VISITOR   — ConcreteElement
+ */
+public class Episodio implements ProdutoComercial {
+
 	private String titulo;
-    private Double preco;
-    private Timeline timeline;
-    private Integer numero;
+	private Double preco;
+	private Integer numero;
+	private Timeline timeline;
 
 	public Episodio(String titulo, Double preco, Integer numero, Timeline timeline) {
-    	this.titulo = titulo;
-        this.preco = preco;
-        this.timeline = timeline;
-        this.numero = numero;
+		this.titulo = titulo;
+		this.preco = preco;
+		this.numero = numero;
+		this.timeline = timeline;
 	}
-	
-    public Double getPreco() {
-    	return this.preco; 
-    }
-    
-    public Integer getDuracao() { 
-    	return this.timeline.getDurationInSeconds();
-    }
 
+	@Override
 	public String getTitulo() {
 		return this.titulo;
 	}
@@ -32,8 +31,18 @@ public class Episodio{
 		return this.numero;
 	}
 
-	public String toXML() {
-		String xml = "<episodio titulo=\"" + this.getTitulo() + "\" numero=\"" + this.getNumero() + "\"/>\n";
-		return xml;
-	}   	
+	@Override
+	public Double getPreco() {
+		return this.preco;
+	}
+
+	@Override
+	public Integer getDuracao() {
+		return this.timeline.getDurationInSeconds();
+	}
+
+	@Override
+	public void accept(PlaylistVisitor visitor) {
+		visitor.visit(this);
+	}
 }

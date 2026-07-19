@@ -1,4 +1,4 @@
-# INF011 – Padrões de Projeto – Avaliação III
+# INF011 - Padrões de Projeto - Avaliação III
 ## O Ecossistema de Streaming: Do Motor Técnico à Plataforma Comercial
 
 ---

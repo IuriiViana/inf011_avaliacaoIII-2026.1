@@ -3,41 +3,58 @@ package br.edu.ifba.inf011.model.comercial;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Serie {
+import br.edu.ifba.inf011.avaliacao3.composite.ProdutoComercial;
+import br.edu.ifba.inf011.avaliacao3.visitor.PlaylistVisitor;
 
-	protected String titulo;
-	protected Integer temporada;
-    protected List<Episodio> episodios;
-    
+/**
+ * COMPOSITE — Composite (agrupador de Episodios)
+ * VISITOR   — ConcreteElement
+ *
+ * Serie agrega Episodios e delega o cálculo de preço/duração a eles.
+ * Pode ser adicionada a um Pacote porque implementa ProdutoComercial,
+ * e pode ser adicionada a uma Playlist porque ProdutoComercial extends PlaylistItem.
+ */
+public class Serie implements ProdutoComercial {
+
+    private String titulo;
+    private Integer temporada;
+    private List<Episodio> episodios;
+
     public Serie(String titulo, Integer temporada) {
-    	this.titulo = titulo;
-    	this.episodios = new ArrayList<Episodio>();
-    };
-    
+        this.titulo = titulo;
+        this.temporada = temporada;   // corrigido: o construtor original esquecia de setar temporada
+        this.episodios = new ArrayList<>();
+    }
+
+    public void adicionarEpisodio(Episodio episodio) {
+        this.episodios.add(episodio);
+    }
+
+    public List<Episodio> getEpisodios() {
+        return this.episodios;
+    }
+
+    @Override
     public String getTitulo() {
-    	return this.titulo;
+        return this.titulo;
     }
-        
-    public Double getPreco() {
-        double soma = this.episodios.stream().mapToDouble(Episodio::getPreco).sum();
-        return soma * 0.9;
-    }
-        
-    public Double getDuracao() {
-        return  this.episodios.stream().mapToDouble(Episodio::getDuracao).sum();
-    }    
-    
+
     public Integer getTemporada() {
-    	return this.temporada;
+        return this.temporada;
     }
-    
 
-	public String toXML() {
-		String xml = "\t<serie titulo=\"" + this.getTitulo() + "\" temporada=\"" + this.getTemporada() + "\">\n";
-		for(Episodio episodio : this.episodios)
-			xml += episodio.toXML();
-		return xml + "\t</serie>\n";
-		
-	}    
+    @Override
+    public Double getPreco() {
+        return this.episodios.stream().mapToDouble(Episodio::getPreco).sum() * 0.9;
+    }
 
+    @Override
+    public Integer getDuracao() {
+        return this.episodios.stream().mapToInt(Episodio::getDuracao).sum();
+    }
+
+    @Override
+    public void accept(PlaylistVisitor visitor) {
+        visitor.visit(this);
+    }
 }
